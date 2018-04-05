@@ -19,10 +19,10 @@ class UrlListTableViewController: UITableViewController {
     let searchController = UISearchController(searchResultsController: nil)
     var isSearching = false
 
-    var originalDataSource: [UrlModel] = []
-    var searchedDataSource: [UrlModel] = []
+    var originalDataSource: [UrlManagedModel] = []
+    var searchedDataSource: [UrlManagedModel] = []
 
-    var dataSource: [UrlModel] {
+    var dataSource: [UrlManagedModel] {
         if isSearching {
             return searchedDataSource
         } else {
@@ -42,24 +42,20 @@ class UrlListTableViewController: UITableViewController {
         // Configure SearchBar
         navigationItem.searchController = searchController
         searchController.dimsBackgroundDuringPresentation = false
-//        searchController.searchBar.scopeButtonTitles = ["by name", "by status", "by response"]
         searchController.searchBar.delegate = self
 
         // Register cell nib
         tableView.register(UINib(nibName: "UrlTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "UrlCellId")
 
-        // Fill fake data
-        for _ in 1...2 {
-        originalDataSource.append(UrlModel(url: "https://www.google.com"))
-        originalDataSource.append(UrlModel(url: "https://github.com"))
-        originalDataSource.append(UrlModel(url: "youtube.com"))
-        }
+        // Fetch objects
+        originalDataSource = CoreDataManager.fetchObjects()
+        
         sort()
     }
     
     @IBAction func refreshAction(_ sender: Any) {
         dataSource.forEach { (model) in
-            model.status = .unknown
+            model.status = UrlStatus.unknown.rawValue
         }
         tableView.reloadData()
     }
@@ -71,9 +67,9 @@ class UrlListTableViewController: UITableViewController {
         }
 
         let okAction = UIAlertAction(title: "Add", style: .default) { (action) in
-            if let url = alert.textFields?.first?.text {
-                let newModel = UrlModel(url: url)
-                self.originalDataSource.append(newModel)
+            if let url = alert.textFields?.first?.text, !url.isEmpty {
+                _ = CoreDataManager.saveObject(urlAddress: url)
+                self.originalDataSource = CoreDataManager.fetchObjects()
                 self.sort()
             }
         }
@@ -114,9 +110,9 @@ class UrlListTableViewController: UITableViewController {
     func sort(byName descending: Bool) {
         originalDataSource.sort { (lhs, rhs) -> Bool in
             if descending {
-                return lhs.urlAddress > rhs.urlAddress
+                return lhs.urlAddress ?? "" > rhs.urlAddress ?? ""
             } else {
-                return lhs.urlAddress < rhs.urlAddress
+                return lhs.urlAddress ?? "" < rhs.urlAddress ?? ""
             }
         }
         tableView.reloadData()
@@ -125,9 +121,9 @@ class UrlListTableViewController: UITableViewController {
     func sort(byStatus descending: Bool) {
         originalDataSource.sort { (lhs, rhs) -> Bool in
             if descending {
-                return UInt8(lhs.status.rawValue) > UInt8(rhs.status.rawValue)
+                return UInt8(lhs.status) > UInt8(rhs.status)
             } else {
-                return UInt8(lhs.status.rawValue) < UInt8(rhs.status.rawValue)
+                return UInt8(lhs.status) < UInt8(rhs.status)
             }
         }
         tableView.reloadData()
@@ -160,7 +156,7 @@ class UrlListTableViewController: UITableViewController {
         cell.textLabel?.text = model.urlAddress
         cell.detailTextLabel?.text = "in \(String(format:"%.2f", model.requestDuration)) sec"
 
-        switch model.status {
+        switch UrlStatus(rawValue: model.status)! {
         case .unknown:
             cell.backgroundColor = UIColor.white
             cell.indicator.startAnimating()
@@ -188,7 +184,7 @@ class UrlListTableViewController: UITableViewController {
 
         let model = dataSource[indexPath.row]
         
-        guard let url = URL(string: model.urlAddress) else {
+        guard let url = URL(string: model.urlAddress ?? "") else {
             return
         }
         
@@ -209,11 +205,11 @@ class UrlListTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
+            let model = dataSource[indexPath.row]
+            _ = CoreDataManager.removeObject(model: model)
             originalDataSource.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
     }
     
     func toogleTableHeaderView() {
@@ -242,13 +238,9 @@ extension UrlListTableViewController: UISearchBarDelegate {
         }
 
         searchedDataSource = originalDataSource.filter({ (model) -> Bool in
-            model.urlAddress.localizedCaseInsensitiveContains(searchText)
+            model.urlAddress?.localizedCaseInsensitiveContains(searchText) ?? false
         })
         tableView.reloadData()
-    }
-
-    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-
     }
 
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {

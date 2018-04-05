@@ -15,7 +15,8 @@
 		079BAB7D2076A18A008168B6 /* UrlTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079BAB7B2076A18A008168B6 /* UrlTableViewCell.swift */; };
 		079BAB7E2076A18A008168B6 /* UrlTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 079BAB7C2076A18A008168B6 /* UrlTableViewCell.xib */; };
 		079BAB802076A1A4008168B6 /* UrlListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079BAB7F2076A1A4008168B6 /* UrlListTableViewController.swift */; };
-		079BAB822076A205008168B6 /* UrlModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079BAB812076A205008168B6 /* UrlModel.swift */; };
+		079BAB822076A205008168B6 /* UrlManagedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079BAB812076A205008168B6 /* UrlManagedModel.swift */; };
+		07DD6B172076E0AC005377CD /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DD6B162076E0AC005377CD /* CoreDataManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,7 +30,8 @@
 		079BAB7B2076A18A008168B6 /* UrlTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlTableViewCell.swift; sourceTree = "<group>"; };
 		079BAB7C2076A18A008168B6 /* UrlTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UrlTableViewCell.xib; sourceTree = "<group>"; };
 		079BAB7F2076A1A4008168B6 /* UrlListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlListTableViewController.swift; sourceTree = "<group>"; };
-		079BAB812076A205008168B6 /* UrlModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlModel.swift; sourceTree = "<group>"; };
+		079BAB812076A205008168B6 /* UrlManagedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlManagedModel.swift; sourceTree = "<group>"; };
+		07DD6B162076E0AC005377CD /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 		079BAB602076A014008168B6 /* UrlChecker */ = {
 			isa = PBXGroup;
 			children = (
+				07DD6B152076E08A005377CD /* Managers */,
 				079BAB7A2076A0F8008168B6 /* Views */,
 				079BAB792076A0EE008168B6 /* Models */,
 				079BAB762076A067008168B6 /* View Controllers */,
@@ -84,7 +87,7 @@
 		079BAB792076A0EE008168B6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				079BAB812076A205008168B6 /* UrlModel.swift */,
+				079BAB812076A205008168B6 /* UrlManagedModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -98,6 +101,14 @@
 				079BAB7C2076A18A008168B6 /* UrlTableViewCell.xib */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		07DD6B152076E08A005377CD /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				07DD6B162076E0AC005377CD /* CoreDataManager.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -172,9 +183,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07DD6B172076E0AC005377CD /* CoreDataManager.swift in Sources */,
 				079BAB6A2076A014008168B6 /* UrlChecker.xcdatamodeld in Sources */,
 				079BAB622076A014008168B6 /* AppDelegate.swift in Sources */,
-				079BAB822076A205008168B6 /* UrlModel.swift in Sources */,
+				079BAB822076A205008168B6 /* UrlManagedModel.swift in Sources */,
 				079BAB802076A1A4008168B6 /* UrlListTableViewController.swift in Sources */,
 				079BAB7D2076A18A008168B6 /* UrlTableViewCell.swift in Sources */,
 			);
