@@ -10,29 +10,39 @@ import UIKit
 
 class UrlListTableViewController: UITableViewController {
 
+    enum SortType: Int {
+        case name, status, duration
+    }
+
     let searchController = UISearchController(searchResultsController: nil)
     
     var dataSource: [UrlModel] = []
-    
+
+    var sortType = SortType.name
+    var descending = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "URL Checker"
+        navigationController?.navigationBar.prefersLargeTitles = true
         
         // Configure SearchBar
         navigationItem.searchController = searchController
         searchController.dimsBackgroundDuringPresentation = false
-        searchController.searchBar.scopeButtonTitles = ["by name", "by status", "by response"]
+//        searchController.searchBar.scopeButtonTitles = ["by name", "by status", "by response"]
+        searchController.searchBar.delegate = self
 
         // Register cell nib
         tableView.register(UINib(nibName: "UrlTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "UrlCellId")
 
         // Fill fake data
-        for _ in 1...5 {
+        for _ in 1...2 {
         dataSource.append(UrlModel(url: "https://www.google.com"))
         dataSource.append(UrlModel(url: "https://github.com"))
         dataSource.append(UrlModel(url: "youtube.com"))
         }
+        sort()
     }
     
     @IBAction func refreshAction(_ sender: Any) {
@@ -52,7 +62,7 @@ class UrlListTableViewController: UITableViewController {
             if let url = alert.textFields?.first?.text {
                 let newModel = UrlModel(url: url)
                 self.dataSource.append(newModel)
-                self.tableView.reloadData()
+                self.sort()
             }
         }
         alert.addAction(okAction)
@@ -61,6 +71,65 @@ class UrlListTableViewController: UITableViewController {
         alert.addAction(cancelAction)
         
         present(alert, animated: true, completion: nil)
+    }
+    
+    @IBAction func sortTypeDidChange(_ sender: UISegmentedControl) {
+        let selectedScope = sender.selectedSegmentIndex
+        sortType = SortType(rawValue: selectedScope)!
+        
+        sort()
+    }
+    
+    @IBAction func ascendingDidChange(_ sender: UISegmentedControl) {
+        let selectedScope = sender.selectedSegmentIndex
+        switch selectedScope {
+        case 0: descending = false
+        case 1: descending = true
+        default: break
+        }
+
+        sort()
+    }
+
+    func sort() {
+        switch sortType {
+        case .name: sort(byName: descending)
+        case .status: sort(byStatus: descending)
+        case .duration: sort(byDuration: descending)
+        }
+    }
+
+    func sort(byName descending: Bool) {
+        dataSource.sort { (lhs, rhs) -> Bool in
+            if descending {
+                return lhs.urlAddress > rhs.urlAddress
+            } else {
+                return lhs.urlAddress < rhs.urlAddress
+            }
+        }
+        tableView.reloadData()
+    }
+    
+    func sort(byStatus descending: Bool) {
+        dataSource.sort { (lhs, rhs) -> Bool in
+            if descending {
+                return UInt8(lhs.status.rawValue) > UInt8(rhs.status.rawValue)
+            } else {
+                return UInt8(lhs.status.rawValue) < UInt8(rhs.status.rawValue)
+            }
+        }
+        tableView.reloadData()
+    }
+    
+    func sort(byDuration descending: Bool) {
+        dataSource.sort { (lhs, rhs) -> Bool in
+            if descending {
+                return lhs.requestDuration > rhs.requestDuration
+            } else {
+                return lhs.requestDuration < rhs.requestDuration
+            }
+        }
+        tableView.reloadData()
     }
     
     // MARK: - Table view data source
@@ -118,5 +187,20 @@ class UrlListTableViewController: UITableViewController {
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
+    }
+}
+
+extension UrlListTableViewController: UISearchBarDelegate {
+
+    public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+
+    }
+
+    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+
+    }
+
+    public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+
     }
 }
