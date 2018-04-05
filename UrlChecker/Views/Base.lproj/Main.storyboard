@@ -33,13 +33,21 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="kgT-p5-uRt">
-                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="NLc-gq-5pg"/>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="qhh-PQ-GQD"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="NLc-gq-5pg">
+                            <connections>
+                                <action selector="refreshAction:" destination="Er7-Kf-drw" id="QcR-Bw-Ko3"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="qhh-PQ-GQD">
+                            <connections>
+                                <action selector="addAction:" destination="Er7-Kf-drw" id="oTT-BK-bBL"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aMP-82-qr3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1258" y="27"/>
+            <point key="canvasLocation" x="1311" y="27"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ACv-NP-QeB">

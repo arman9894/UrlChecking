@@ -10,9 +10,13 @@ import UIKit
 
 class UrlTableViewCell: UITableViewCell {
 
+    let indicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.gray)
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        indicator.hidesWhenStopped = true
+        accessoryView = indicator
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
