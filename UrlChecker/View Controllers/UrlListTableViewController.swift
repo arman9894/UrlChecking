@@ -10,13 +10,25 @@ import UIKit
 
 class UrlListTableViewController: UITableViewController {
 
+    @IBOutlet var tableHeaderView: UIView!
+    
     enum SortType: Int {
         case name, status, duration
     }
 
     let searchController = UISearchController(searchResultsController: nil)
-    
-    var dataSource: [UrlModel] = []
+    var isSearching = false
+
+    var originalDataSource: [UrlModel] = []
+    var searchedDataSource: [UrlModel] = []
+
+    var dataSource: [UrlModel] {
+        if isSearching {
+            return searchedDataSource
+        } else {
+            return originalDataSource
+        }
+    }
 
     var sortType = SortType.name
     var descending = false
@@ -38,9 +50,9 @@ class UrlListTableViewController: UITableViewController {
 
         // Fill fake data
         for _ in 1...2 {
-        dataSource.append(UrlModel(url: "https://www.google.com"))
-        dataSource.append(UrlModel(url: "https://github.com"))
-        dataSource.append(UrlModel(url: "youtube.com"))
+        originalDataSource.append(UrlModel(url: "https://www.google.com"))
+        originalDataSource.append(UrlModel(url: "https://github.com"))
+        originalDataSource.append(UrlModel(url: "youtube.com"))
         }
         sort()
     }
@@ -61,7 +73,7 @@ class UrlListTableViewController: UITableViewController {
         let okAction = UIAlertAction(title: "Add", style: .default) { (action) in
             if let url = alert.textFields?.first?.text {
                 let newModel = UrlModel(url: url)
-                self.dataSource.append(newModel)
+                self.originalDataSource.append(newModel)
                 self.sort()
             }
         }
@@ -100,7 +112,7 @@ class UrlListTableViewController: UITableViewController {
     }
 
     func sort(byName descending: Bool) {
-        dataSource.sort { (lhs, rhs) -> Bool in
+        originalDataSource.sort { (lhs, rhs) -> Bool in
             if descending {
                 return lhs.urlAddress > rhs.urlAddress
             } else {
@@ -111,7 +123,7 @@ class UrlListTableViewController: UITableViewController {
     }
     
     func sort(byStatus descending: Bool) {
-        dataSource.sort { (lhs, rhs) -> Bool in
+        originalDataSource.sort { (lhs, rhs) -> Bool in
             if descending {
                 return UInt8(lhs.status.rawValue) > UInt8(rhs.status.rawValue)
             } else {
@@ -122,7 +134,7 @@ class UrlListTableViewController: UITableViewController {
     }
     
     func sort(byDuration descending: Bool) {
-        dataSource.sort { (lhs, rhs) -> Bool in
+        originalDataSource.sort { (lhs, rhs) -> Bool in
             if descending {
                 return lhs.requestDuration > rhs.requestDuration
             } else {
@@ -171,7 +183,6 @@ class UrlListTableViewController: UITableViewController {
         return cell
     }
 
-
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
@@ -182,18 +193,42 @@ class UrlListTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
-            dataSource.remove(at: indexPath.row)
+            originalDataSource.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
+    
+    func toogleTableHeaderView() {
+        if tableView.tableHeaderView == nil {
+            tableView.tableHeaderView = tableHeaderView
+        } else {
+            tableView.tableHeaderView = nil
+        }
+    }
 }
 
 extension UrlListTableViewController: UISearchBarDelegate {
 
-    public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        isSearching = true
+        toogleTableHeaderView()
+        searchedDataSource = originalDataSource
+        tableView.reloadData()
+    }
 
+    public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            searchedDataSource = originalDataSource
+            tableView.reloadData()
+            return
+        }
+
+        searchedDataSource = originalDataSource.filter({ (model) -> Bool in
+            model.urlAddress.localizedCaseInsensitiveContains(searchText)
+        })
+        tableView.reloadData()
     }
 
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -201,6 +236,8 @@ extension UrlListTableViewController: UISearchBarDelegate {
     }
 
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-
+        isSearching = false
+        toogleTableHeaderView()
+        tableView.reloadData()
     }
 }

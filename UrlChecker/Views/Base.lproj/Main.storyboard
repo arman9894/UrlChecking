@@ -47,23 +47,13 @@
                             <constraints>
                                 <constraint firstItem="Rwf-wl-PdL" firstAttribute="leading" secondItem="kSE-03-z1i" secondAttribute="leading" constant="8" id="813-IK-nhC"/>
                                 <constraint firstItem="Xzh-Iz-cI5" firstAttribute="leading" secondItem="Rwf-wl-PdL" secondAttribute="leading" id="B98-OC-baF"/>
+                                <constraint firstAttribute="trailing" secondItem="Rwf-wl-PdL" secondAttribute="trailing" constant="8" id="GxO-Tf-ceu"/>
                                 <constraint firstItem="Xzh-Iz-cI5" firstAttribute="top" secondItem="Rwf-wl-PdL" secondAttribute="bottom" constant="8" id="TKZ-fN-ohe"/>
                                 <constraint firstItem="Xzh-Iz-cI5" firstAttribute="trailing" secondItem="Rwf-wl-PdL" secondAttribute="trailing" id="VqT-HH-wGb"/>
-                                <constraint firstItem="Rwf-wl-PdL" firstAttribute="centerX" secondItem="kSE-03-z1i" secondAttribute="centerX" id="dsS-v2-bxd"/>
                                 <constraint firstAttribute="bottom" secondItem="Xzh-Iz-cI5" secondAttribute="bottom" constant="8" id="gAN-Nb-06A"/>
                                 <constraint firstItem="Rwf-wl-PdL" firstAttribute="top" secondItem="kSE-03-z1i" secondAttribute="top" constant="8" id="xrR-pB-K5P"/>
                             </constraints>
                         </view>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="E5W-ct-jBQ">
-                                <rect key="frame" x="0.0" y="108" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="E5W-ct-jBQ" id="sU3-qY-KwF">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="Er7-Kf-drw" id="sew-zS-mhe"/>
                             <outlet property="delegate" destination="Er7-Kf-drw" id="z9X-Wy-tRk"/>
@@ -81,6 +71,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="tableHeaderView" destination="kSE-03-z1i" id="vyy-0S-GxQ"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aMP-82-qr3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
